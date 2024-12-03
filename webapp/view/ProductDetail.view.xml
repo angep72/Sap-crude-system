@@ -1,0 +1,45 @@
+<mvc:View
+    xmlns="sap.m"
+    xmlns:mvc="sap.ui.core.mvc"
+    controllerName="com.myorg.myapp.controller.ProductDescription"
+>
+    <Page
+        id="productPanels"
+        showNavButton="true"
+        title="Product Details"
+        navButtonPress="onNavBack"
+        class="sapUiLargeMargin"
+    >
+       <content>
+<Table >
+    <headerToolbar>
+        <Toolbar >
+            <Title text="Product description details"/>
+        </Toolbar>
+    </headerToolbar>
+    <columns>
+        <Column>
+            <Text text="product ID"/>
+        </Column>
+        <Column >
+            <Text text="Product name" />
+        </Column>
+        <Column >
+            <Text text="Description"/>
+        </Column>
+        <Column >
+            <Text text="Release date"/>
+        </Column>
+    </columns>
+    <items>
+        <ColumnListItem>
+            <Text text="{Products>ID}" id="productDId"/>
+            <Text text="{Products>Name} " id="productDName"/>
+            <Text text="{Products/Description}" id="description"/>
+            <Text text="{Products/ReleaseDate} " id="Drelease"/>
+        </ColumnListItem>
+    </items>
+</Table>       
+</content>
+    </Page>
+</mvc:View>
