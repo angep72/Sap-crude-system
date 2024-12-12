@@ -14,10 +14,11 @@
 			<Panel
 				id="employeePanel"
 				width="auto"
-				class="sapUiNoContentPadding">
+				class="sapUiNoContentPadding"
+				>
 				<headerToolbar>
 					<Toolbar>
-						<Title text="{i18n>EmployeeIDColon} {EmployeeID}" level="H2"/>
+						<Title text="{i18n>EmployeeIDColon} {employee>/EmployeeID}" level="H2"/>
 						<ToolbarSpacer />
 						<Link text="{i18n>FlipToResume}" tooltip="{i18n>FlipToResume.tooltip}" press=".onShowResume"/>
 					</Toolbar>
@@ -30,19 +31,19 @@
 						columnsL="1" columnsM="1">
 						<f:content>
 							<Label text="{i18n>formFirstName}"/>
-							<Text text="{FirstName}"/>
+							<Text text="{employee>/FirstName}"/>
 							<Label text="{i18n>formLastName}"/>
-							<Text text="{LastName}"/>
+							<Text text="{employee>/LastName}"/>
 							<Label text="{i18n>formAddress}"/>
-							<Text text="{Address}"/>
+							<Text text="{employee>/Address}"/>
 							<Label text="{i18n>formCity}"/>
-							<Text text="{City}, {Region}"/>
+							<Text text="{employee>/City}, {employee>/Country}"/>
 							<Label text="{i18n>formPostalCode}"/>
-							<Text text="{PostalCode}"/>
+							<Text text="{employee>/PostalCode}"/>
 							<Label text="{i18n>formPhoneHome}"/>
-							<Text text="{HomePhone}"/>
+							<Text text="{employee>/Region}"/>
 							<Label text="{i18n>formCountry}"/>
-							<Text text="{Country}"/>
+							<Text text="{employee>/Resume}"/>
 						</f:content>
 					</f:SimpleForm>
 				</content>
