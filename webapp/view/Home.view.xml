@@ -1,0 +1,12 @@
+<mvc:View
+    xmlns="sap.m"
+    xmlns:mvc="sap.ui.core.mvc"
+    controllerName="com.myorg.myapp.controller.Home">
+	<Page title="{i18n>homePageTitle}" class="sapUiResponsiveContentPadding" showNavButton="true" navButtonPress="onNavBack">
+		<content>
+			<Button id="displayNotFoundBtn" text="notfound" press=".onDisplayNotFound" class="sapUiTinyMarginEnd"/>
+			<Button id="employeeListBtn" text="employeeList" press=".onNavToEmployees" class="sapUiTinyMarginEnd"/>
+			<Button id="employeeOverviewBtn" text="Employeeoe" press=".onNavToEmployeeOverview" class="sapUiTinyMarginEnd"/>
+		</content>
+	</Page>
+</mvc:View>

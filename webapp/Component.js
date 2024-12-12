@@ -15,8 +15,11 @@ sap.ui.define(
 
 			init: function () {
 				// Call the base component's init function
-				UIComponent.prototype.init.apply(this, arguments);
+// call the init function of the parent
+UIComponent.prototype.init.apply(this, arguments);
 
+// create the views based on the url/hash
+this.getRouter().initialize();
 				// Set device model
 				this.setModel(
 					new JSONModel({

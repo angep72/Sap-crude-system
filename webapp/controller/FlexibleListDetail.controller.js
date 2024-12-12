@@ -9,7 +9,7 @@ sap.ui.define(
 	function (Controller, MessageBox, UIComponent, JSONModel, ODataModel) {
 		"use strict";
 
-		return Controller.extend("com.myorg.myapp.controller.ProductDescription", {
+		return Controller.extend("com.myorg.myapp.controller.FlexibleListDetail", {
 			onInit: function () {
 				let oRouter = UIComponent.getRouterFor(this);
 				oRouter.getRoute("productdescription").attachPatternMatched(this.onProductMatched, this);
@@ -36,13 +36,14 @@ sap.ui.define(
 				oModel.read(`/Products(${sProductId})`, {
 					success: (data) => {
 						// this.getView().setModel(new JSONModel(data));
-						this.byId("productDId").setText(data.ID);
-						this.byId("productDName").setText(data.Name);
-						this.byId("description").setText(data.Description);
+						this.byId("productidflex").setText(data.ID);
+						this.byId("productDNameflex").setText(data.Name);
+						this.byId("descriptionflex").setText(data.Description);
 						// this.byId("productRating").setText("Rating: " + data.Rating);
-						this.byId("Drelease").setText(
+						this.byId("supplierProduct").setText(
 							data.ReleaseDate
 						);
+                        
 					},
 				});
 			},
