@@ -42,6 +42,10 @@ sap.ui.define([
                     MessageToast.show("Employee not found");
                 }
             }, this);
+        },
+        onNavBack:function(){
+            var oRouter =this.getOwnerComponent().getRouter()
+            oRouter.navTo("employee")
         }
     });
 });
