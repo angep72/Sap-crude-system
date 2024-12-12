@@ -19,6 +19,8 @@
                     <Toolbar>
                         <Title text="Suppliers Text" />
                         <ToolbarSpacer />
+                        <Button text="Routing course" press="onHome"/>
+                        <Button text="flexible Colum" press="onFlexibleColumn"/>
                         <SearchField
                             placeholder="please search the feild"
                             width="30%"

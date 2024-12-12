@@ -4,12 +4,15 @@ sap.ui.define(
 		"sap/m/MessageBox",
 		"sap/ui/model/odata/v2/ODataModel",
 		"sap/ui/model/Sorter",
+		"sap/f/LayoutType", 
+		 "sap/f/library"
 	],
-	function (BaseController, MessageBox, ODataModel,Sorter) {
+	function (BaseController, MessageBox, ODataModel,Sorter,LayoutType,fLibrary) {
 		"use strict";
 
 		return BaseController.extend("com.myorg.myapp.controller.Main", {
 			onInit() {
+				 
 				let oModel = new ODataModel("http://localhost:3000/odata", {
 					defaultBindingMode: "TwoWay",
 					useBatch: false,
@@ -26,7 +29,35 @@ sap.ui.define(
 					},
 				});
 			},
+            
 
+			onFlexibleColumn:function(){
+
+				var oRouter = this.getOwnerComponent().getRouter();
+				oRouter.navTo("flexible");
+			},
+			onHome:function(){
+                var oRouter = this.getOwnerComponent().getRouter();
+				oRouter.navTo("home");
+			},
+			onListItemPress:function(oEvent){
+				var oSelectedItem = oEvent.getSource(); // The selected list item (or table row)
+
+				// Retrieve the binding context for the selected item
+				var oBindingContext = oSelectedItem.getBindingContext();
+				console.log(oBindingContext)
+
+				// Access the productId from the binding context, assuming the property is called 'productId'
+				const productId = oBindingContext.getProperty("ID");
+				let flexibleColumn = this.getView().getParent().getParent();
+				var oRouter = this.getOwnerComponent().getRouter();
+				oRouter.navTo("productdescription", {
+					productId: productId,
+				},false);
+             
+			  flexibleColumn.setLayout(LayoutType.TwoColumnsMidExpanded)
+			},
+			
 			onProductSelect: function (oEvent) {
 				var oSelectedItem = oEvent.getSource(); // The selected list item (or table row)
 

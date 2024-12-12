@@ -10,7 +10,6 @@
       "version": "${version}"
     }
   },
-
   "sap.ui": {
     "technology": "UI5",
     "icons": {},
@@ -20,9 +19,7 @@
       "phone": true
     }
   },
-
   "sap.ui5": {
-   
     "rootView": {
       "viewName": "com.myorg.myapp.view.App",
       "type": "XML",
@@ -33,10 +30,11 @@
       "minUI5Version": "1.130.2",
       "libs": {
         "sap.ui.core": {},
-        "sap.m": {}
+        "sap.m": {},
+        "sap.f": {},
+        "sap.uxap": {}
       }
     },
-    
     "handleValidation": true,
     "contentDensities": {
       "compact": true,
@@ -50,11 +48,13 @@
         }
       }
     },
-    "resources":{
-      "css": [{
-        "uri":"css/index.css"
-      }]
-  },
+    "resources": {
+      "css": [
+        {
+          "uri": "css/index.css"
+        }
+      ]
+    },
     "routing": {
       "config": {
         "routerClass": "sap.m.routing.Router",
@@ -67,14 +67,49 @@
       },
       "routes": [
         {
+          "pattern": "employees/{employeeId}/resume:?query:",
+          "name": "employeeResume",
+          "target": "employeeResume"
+        },
+        {
+         "pattern": "employee/{EmployeeID}",
+         "name":"employeeDetail",
+         "target":"employeeDetail"
+        },
+        {
+          "pattern": "employee",
+          "name": "employee",
+          "target": "employee"
+        },
+        {
+          "pattern": "home",
+          "name": "home",
+          "target": "home"
+        },
+        {
           "pattern": "",
           "name": "main",
           "target": "main"
         },
         {
           "pattern": "product/{productId}",
-          "name": "productdescription", 
-          "target": "productDetail" 
+          "name": "productdescription",
+          "target": [
+            "Flexible,productDetail"
+          ]
+        },
+        {
+          "pattern": "flexible",
+          "name": "flexible",
+          "target": "flexible"
+        },
+        {
+          "pattern": "detail/{layout}",
+          "name": "detail",
+          "target": [
+            "flexible",
+            "detail"
+          ]
         }
       ],
       "targets": {
@@ -85,7 +120,33 @@
         "productDetail": {
           "viewName": "ProductDetail",
           "viewId": "productDetailView"
-        }
+        },
+        "flexible": {
+          "viewName": "FlexibleColumn",
+          "viewId": "flexiblecol"
+        },
+        "flexibleList": {
+          "viewName": "flexibleList",
+          "viewId": "flexiblelist"
+        },
+        "home": {
+          "viewName": "Home",
+          "viewId": "home"
+        },
+        "employee": {
+          "viewName": "Employee",
+          "viewId": "employee"
+        },
+        "employeeDetail":{
+          "viewName": "EmployeeDetail",
+          "viewId": "employeeDetail"
+        },
+        "employeeResume": {
+					"id": "resume",
+					"name": "employee.Resume",
+					"level" : 4,
+					"transition": "flip"
+				}
       }
     }
   }
