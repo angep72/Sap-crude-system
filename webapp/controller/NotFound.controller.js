@@ -6,6 +6,10 @@ sap.ui.define([
 
 		onInit: function () {
 
+		},
+        onNavBack : function () {
+			var oRouter = this.getOwnerComponent().getRouter()
+            oRouter.navTo("main")
 		}
 
 	});
