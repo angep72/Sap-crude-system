@@ -63,6 +63,9 @@
         "viewPath": "com.myorg.myapp.view",
         "controlId": "app",
         "controlAggregation": "pages",
+        "bypassed": {
+					"target": "notFound"
+				},
         "async": true
       },
       "routes": [
@@ -143,9 +146,14 @@
         },
         "employeeResume": {
 					"id": "resume",
-					"name": "employee.Resume",
+					"viewName": "employee.Resume",
 					"level" : 4,
 					"transition": "flip"
+				},
+        	"notFound": {
+					"id": "notFound",
+					"viewName": "NotFound",
+					"transition": "show"
 				}
       }
     }

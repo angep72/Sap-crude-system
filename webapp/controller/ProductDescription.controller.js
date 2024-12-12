@@ -31,7 +31,7 @@ sap.ui.define(
 				// // Read the product data from the OData service
 				var sPath = "/Products(" + sProductId + ")?$expand=ProductDetail";
 				var oBindingContext = oModel.createBindingContext(sPath);
-				this.getView().setBindingContext(oBindingContext); // B
+				this.getView().setBindingContext(oBindingContext); // 
 
 				oModel.read(`/Products(${sProductId})`, {
 					success: (data) => {
