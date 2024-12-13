@@ -2,7 +2,7 @@
 	xmlns="sap.m"
 	xmlns:mvc="sap.ui.core.mvc"
 	xmlns:f="sap.ui.layout.form"
-    controllerName="com.myorg.myapp.controller.Employee"
+    controllerName="com.myorg.myapp.controller.employee.Employee"
 	busyIndicatorDelay="0">
 	<Page
 		id="employeeListPage"

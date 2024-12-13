@@ -4,7 +4,7 @@ sap.ui.define([
 ], function (Controller, JSONModel) {
     "use strict";
 
-    return Controller.extend("com.myorg.myapp.controller.Employee", {
+    return Controller.extend("com.myorg.myapp.controller.employee.Employee", {
 
         onInit: function () {
             // Create a new JSON model instance

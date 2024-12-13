@@ -137,12 +137,16 @@
           "viewId": "home"
         },
         "employee": {
-          "viewName": "Employee",
-          "viewId": "employee"
+         "id": "employeeList",
+					"path": "com.myorg.myapp.view.employee",
+					"viewName": "employee.Employee",
+					"level": 2
         },
         "employeeDetail":{
-          "viewName": "EmployeeDetail",
-          "viewId": "employeeDetail"
+         "id": "employeeDetail",
+					"path": "com.myorg.myapp.view.employee",
+					"viewName": "employee.EmployeeDetail",
+					"level": 2
         },
         "employeeResume": {
 					"id": "resume",
