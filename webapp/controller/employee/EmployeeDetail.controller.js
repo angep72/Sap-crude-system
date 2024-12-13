@@ -6,7 +6,7 @@ sap.ui.define([
 ], function (Controller, UIComponent, JSONModel, MessageToast) {
     "use strict";
 
-    return Controller.extend("com.myorg.myapp.controller.EmployeeDetail", {
+    return Controller.extend("com.myorg.myapp.controller.employee.EmployeeDetail", {
 
         onInit: function () {
             // Get the router correctly using UIComponent.getRouterFor(this)
