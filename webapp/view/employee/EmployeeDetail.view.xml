@@ -8,7 +8,7 @@
 		id="employeePage"
 		title="{i18n>EmployeeDetailsOf} {FirstName} {LastName}"
 		showNavButton="true"
-		navButtonPress=".onNavBack"
+		navButtonPress=".onNavBacke"
 		class="sapUiResponsiveContentPadding">
 		<content>
 			<Panel
