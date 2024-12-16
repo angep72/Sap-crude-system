@@ -69,16 +69,17 @@
         "async": true
       },
       "routes": [
-        {
-          "pattern": "employees/{employeeId}/resume:?query:",
-					"name": "employeeResume",
-					"target": "employeeResume"
-				},
+       
         {
          "pattern": "employeeDetail/{EmployeeID}",
          "name":"employeeDetail",
          "target":"employeeDetail"
         },
+        {
+          "pattern": "employees/{employeeId}/resume:?query:",
+					"name": "employeeResume",
+					"target": "employeeResume"
+				},
         {
           "pattern": "employee",
           "name": "employee",

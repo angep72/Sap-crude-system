@@ -75,7 +75,7 @@ sap.ui.define([
                 var oRouter = this.getOwnerComponent().getRouter();
                 oRouter.navTo("employeeResume", {
                     employeeId: sEmployeeId
-                }, false);
+                },false);
             } else {
                 // Show error message to user
                 MessageToast.show(this.getView().getModel("i18n").getResourceBundle().getText("ErrorNavigatingToResume"));
