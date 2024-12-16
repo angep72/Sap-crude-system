@@ -1,18 +1,20 @@
 <mvc:View
-	
 	xmlns="sap.m"
+    controllerName="com.myorg.myapp.controller.employee.ResumeDetail"
 	xmlns:mvc="sap.ui.core.mvc">
 	<Page
 		title="{i18n>ResumeOf} {FirstName} {LastName}"
 		id="employeeResumePage"
 		showNavButton="true"
-		navButtonPress=".onNavBack">
+		navButtonPress=".onNavBacke">
 		<content>
 			<IconTabBar
 				id="iconTabBar"
 				headerBackgroundDesign="Transparent"
 				class="sapUiResponsiveContentPadding"
-				binding="{Resume}">
+				binding="{Resume}"
+                select=".onTabSelect"
+				selectedKey="{view>/selectedTabKey}">
 				<items>
 					<IconTabFilter id="infoTab" text="{i18n>tabInfo}" key="Info">
 						<Text text="{Information}"/>

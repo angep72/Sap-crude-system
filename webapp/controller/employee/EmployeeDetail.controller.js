@@ -81,6 +81,21 @@ sap.ui.define([
                 MessageToast.show(this.getView().getModel("i18n").getResourceBundle().getText("ErrorNavigatingToResume"));
                 console.error("Could not determine Employee ID");
             }
+        },
+        onNavBacke: function () {
+            var oHistory = sap.ui.core.routing.History.getInstance(); // Get the History instance
+            var sPreviousHash = oHistory.getPreviousHash(); // Get the previous hash (URL)
+        
+            // Check if there is a previous history entry
+            if (sPreviousHash !== undefined) {
+                // If there's a previous page in the browser's history, go back to it
+                window.history.go(-1);
+            } else {
+                // If there's no previous history, navigate to a fallback route (e.g., employeeList)
+                var oRouter = this.getOwnerComponent().getRouter();
+                oRouter.navTo("employeeList", {}, true); // The third parameter `true` enables a full page reload
+            }
         }
+        
     });
 });
