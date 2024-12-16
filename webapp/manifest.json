@@ -70,10 +70,10 @@
       },
       "routes": [
         {
-          "pattern": "employees/{employeeId}/resume:?query:",
-          "name": "employeeResume",
-          "target": "employeeResume"
-        },
+					"pattern": "employees/{employeeId}/resume",
+					"name": "employeeResume",
+					"target": "employeeResume"
+				},
         {
          "pattern": "employeeDetail/{EmployeeID}",
          "name":"employeeDetail",
@@ -137,18 +137,21 @@
           "viewId": "home"
         },
         "employee": {
-          "viewName": "Employee",
-          "viewId": "employee"
+         "id": "employeeList",
+					"path": "com.myorg.myapp.view.employee",
+					"viewName": "employee.Employee",
+					"level": 2
         },
         "employeeDetail":{
-          "viewName": "EmployeeDetail",
-          "viewId": "employeeDetail"
+         "id": "employeeDetail",
+					"path": "com.myorg.myapp.view.employee",
+					"viewName": "employee.EmployeeDetail",
+					"level": 2
         },
         "employeeResume": {
-					"id": "resume",
-					"viewName": "employee.Resume",
-					"level" : 4,
-					"transition": "flip"
+					"viewType": "XML",
+					"viewName": "employee.ResumeDetail",
+					"viewId": "resumeDetail"
 				},
         	"notFound": {
 					"id": "notFound",
