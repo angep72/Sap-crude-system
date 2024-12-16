@@ -43,9 +43,44 @@ sap.ui.define([
                 }
             }, this);
         },
-        onNavBack:function(){
-            var oRouter =this.getOwnerComponent().getRouter()
-            oRouter.navTo("employee")
+
+        // Implement onShowResume function
+        onShowResume: function (oEvent) {
+            // Method 1: Try to get EmployeeID from binding context
+            var oBindingContext = this.getView().getBindingContext();
+
+            var sEmployeeId;
+            if (oBindingContext) {
+                // Try to get EmployeeID from the current binding context
+                sEmployeeId = oBindingContext.getProperty("EmployeeID");
+            }
+
+            // Method 2: Fallback - extract from current route
+            if (!sEmployeeId) {
+                try {
+                    // Get current hash
+                    var oHashChanger = this.getOwnerComponent().getRouter().getHashChanger();
+                    var sHash = oHashChanger.getHash();
+                    
+                    // Assuming route is like "employeeDetail/123"
+                    var aHashParts = sHash.split('/');
+                    sEmployeeId = aHashParts[1];
+                } catch (error) {
+                    console.error("Could not extract EmployeeID from route", error);
+                }
+            }
+
+            // Validate and navigate
+            if (sEmployeeId) {
+                var oRouter = this.getOwnerComponent().getRouter();
+                oRouter.navTo("employeeResume", {
+                    employeeId: sEmployeeId
+                }, false);
+            } else {
+                // Show error message to user
+                MessageToast.show(this.getView().getModel("i18n").getResourceBundle().getText("ErrorNavigatingToResume"));
+                console.error("Could not determine Employee ID");
+            }
         }
     });
 });

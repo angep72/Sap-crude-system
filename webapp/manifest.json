@@ -70,10 +70,10 @@
       },
       "routes": [
         {
-          "pattern": "employees/{employeeId}/resume:?query:",
-          "name": "employeeResume",
-          "target": "employeeResume"
-        },
+					"pattern": "employees/{employeeId}/resume",
+					"name": "employeeResume",
+					"target": "employeeResume"
+				},
         {
          "pattern": "employeeDetail/{EmployeeID}",
          "name":"employeeDetail",
@@ -149,10 +149,9 @@
 					"level": 2
         },
         "employeeResume": {
-					"id": "resume",
-					"viewName": "employee.Resume",
-					"level" : 4,
-					"transition": "flip"
+					"viewType": "XML",
+					"viewName": "employee.ResumeDetail",
+					"viewId": "resumeDetail"
 				},
         	"notFound": {
 					"id": "notFound",
