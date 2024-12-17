@@ -46,7 +46,6 @@ sap.ui.define([
         /**
          * Route matched event handler
          * Manages view setup and tab selection when route is matched
-         * @param {sap.ui.base.Event} oEvent - The routing event
          */
         _onRouteMatched: function (oEvent) {
             var oArgs = oEvent.getParameter("arguments");
