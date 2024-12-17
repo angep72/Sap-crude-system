@@ -10,44 +10,61 @@
                 press="onOpenDialog"
                 type="Emphasized"
             />
+        
         </content>
-           <Dialog
-        id="validationDialog"
-        title="User Information">
-        <content>
-            <VBox class="sapUiSmallMargin">
-                <Label text="Name" labelFor="nameInput"/>
-                <Input 
-                    id="nameInput"
-                    value="{formData>/name}"
-                    placeholder="Enter your name"
-                    required="true"/>
+        <Dialog
+            id="validationDialog"
+            title="User Information"
+        >
+            <content>
                 
-                <Label text="Email" labelFor="emailInput"/>
-                <Input 
-                    id="emailInput"
-                    value="{formData>/email}"
-                    placeholder="Enter your email"
-                    type="Email"/>
-                
-                <Label text="Age" labelFor="ageInput"/>
-                <Input 
-                    id="ageInput"
-                    value="{formData>/age}"
-                    placeholder="Enter your age"
-                    type="Number"/>
-            </VBox>
-        </content>
-        <buttons>
-            <Button 
-                text="Submit" 
-                press="onSubmit" 
-                type="Emphasized"/>
-            <Button 
-                text="Cancel" 
-                press="onCloseDialog" 
-                type="Transparent"/>
-        </buttons>
-    </Dialog>
+                <VBox class="sapUiSmallMargin">
+                    <Label
+                        text="Name"
+                        labelFor="nameInput"
+                    />
+                    <Input
+                        id="nameInput"
+                        value="{formData>/name}"
+                        placeholder="Enter your name"
+                        required="true"
+                    />
+
+                    <Label
+                        text="Email"
+                        labelFor="emailInput"
+                    />
+                    <Input
+                        id="emailInput"
+                        value="{formData>/email}"
+                        placeholder="Enter your email"
+                        type="Email"
+                    />
+
+                    <Label
+                        text="Age"
+                        labelFor="ageInput"
+                    />
+                    <Input
+                        id="ageInput"
+                        value="{formData>/age}"
+                        placeholder="Enter your age"
+                        type="Number"
+                    />
+                </VBox>
+            </content>
+            <buttons>
+                <Button
+                    text="Submit"
+                    press="onSubmit"
+                    type="Emphasized"
+                />
+                <Button
+                    text="Cancel"
+                    press="onCloseDialog"
+                    type="Transparent"
+                />
+            </buttons>
+        </Dialog>
     </Page>
 </mvc:View>

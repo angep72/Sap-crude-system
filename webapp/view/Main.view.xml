@@ -27,11 +27,19 @@
                             text="flexible Colum"
                             press="onFlexibleColumn"
                         />
-                        <SearchField
-                            placeholder="please search the feild"
-                            width="30%"
-                            search="onSearch"
-                        />
+                        	<SearchField
+			id="searchField"
+			width="50%"
+			placeholder="Search for..."
+			enableSuggestions="true"
+			search=".onSearch"
+			suggest=".onSuggest"
+			suggestionItems="{
+				path: '/Products',
+				sorter: { path: 'Name' }
+			}">
+			<SuggestionItem text="{Name}" description="{path:'Price'} {path:'CurrencyCode'}" key="{ID}" />
+		</SearchField>
                         <Button
                             text="sort"
                             icon="sap-icon://sort"
