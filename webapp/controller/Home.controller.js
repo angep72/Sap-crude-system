@@ -28,6 +28,10 @@ sap.ui.define([
         onNavToEmployees: function () {
             const oRouter = this.getOwnerComponent().getRouter();
             oRouter.navTo("employee"); // Navigate to employee
+        },
+        onValidDialog:function(){
+           var oRouter = this.getOwnerComponent().getRouter()
+           oRouter.navTo("validate")
         }
 
     });

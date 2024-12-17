@@ -7,6 +7,7 @@
 			<Button id="displayNotFoundBtn" text="notfound" press=".onDisplayNotFound" class="sapUiTinyMarginEnd"/>
 			<Button id="employeeListBtn" text="employeeList" press=".onNavToEmployees" class="sapUiTinyMarginEnd"/>
 			<Button id="employeeOverviewBtn" text="Employeeoe" press=".onNavToEmployeeOverview" class="sapUiTinyMarginEnd"/>
+			<Button text="validation dialog" press=".onValidDialog" class="sapUiTinyMarginEnd"/>
 		</content>
 	</Page>
 </mvc:View>
