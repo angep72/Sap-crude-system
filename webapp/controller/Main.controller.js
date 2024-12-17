@@ -2,17 +2,17 @@ sap.ui.define(
 	[
 		"./BaseController",
 		"sap/m/MessageBox",
+		"sap/m/MessageToast",
 		"sap/ui/model/odata/v2/ODataModel",
 		"sap/ui/model/Sorter",
 		"sap/f/LayoutType", 
-		 "sap/f/library"
+		"sap/f/library"
 	],
-	function (BaseController, MessageBox, ODataModel,Sorter,LayoutType,fLibrary) {
+	function (BaseController, MessageBox, MessageToast, ODataModel, Sorter, LayoutType, fLibrary) {
 		"use strict";
 
 		return BaseController.extend("com.myorg.myapp.controller.Main", {
 			onInit() {
-				 
 				let oModel = new ODataModel("http://localhost:3000/odata", {
 					defaultBindingMode: "TwoWay",
 					useBatch: false,
@@ -29,60 +29,139 @@ sap.ui.define(
 					},
 				});
 			},
-            
 
-			onFlexibleColumn:function(){
+			// Validation Methods
+			validateProductId: function(oEvent) {
+				const input = oEvent.getSource();
+				const value = input.getValue();
+				
+				if (!/^\d+$/.test(value)) {
+					input.setValueState("Error");
+					input.setValueStateText("Product ID must be a number");
+					return false;
+				}
+				
+				input.setValueState("None");
+				return true;
+			},
 
+			validateProductName: function(oEvent) {
+				const input = oEvent.getSource();
+				const value = input.getValue();
+				
+				if (value.length < 10 || value.length > 45) {
+					input.setValueState("Error");
+					input.setValueStateText("Product Name must be 10-45 characters");
+					return false;
+				}
+				
+				input.setValueState("None");
+				return true;
+			},
+
+			validateRating: function(oEvent) {
+				const input = oEvent.getSource();
+				const value = parseFloat(input.getValue());
+				
+				if (isNaN(value) || value < 1 || value > 10) {
+					input.setValueState("Error");
+					input.setValueStateText("Rating must be between 1 and 10");
+					return false;
+				}
+				
+				input.setValueState("None");
+				return true;
+			},
+
+			validatePrice: function(oEvent) {
+				const input = oEvent.getSource();
+				const value = parseFloat(input.getValue());
+				
+				if (isNaN(value) || value < 100 || value > 1000) {
+					input.setValueState("Error");
+					input.setValueStateText("Price must be between 100 and 1000");
+					return false;
+				}
+				
+				input.setValueState("None");
+				return true;
+			},
+
+			validateReleaseDate: function(oEvent) { 
+				const datePicker = oEvent.getSource(); 
+				const selectedDate = datePicker.getDateValue(); 
+				
+				// Add null/undefined check
+				if (!selectedDate) {
+					datePicker.setValueState("Error");
+					datePicker.setValueStateText("Please select a release date");
+					return false;
+				}
+				
+				const today = new Date(); 
+				
+				// Reset time for accurate comparison 
+				today.setHours(0, 0, 0, 0); 
+				selectedDate.setHours(0, 0, 0, 0); 
+				
+				if (selectedDate < today) { 
+					datePicker.setValueState("Error"); 
+					datePicker.setValueStateText("Release date must be today or in the future"); 
+					return false; 
+				} 
+				
+				datePicker.setValueState("None"); 
+				return true; 
+			},
+
+			// Existing Navigation Methods
+			onFlexibleColumn: function() {
 				var oRouter = this.getOwnerComponent().getRouter();
 				oRouter.navTo("flexible");
 			},
-			onHome:function(){
-                var oRouter = this.getOwnerComponent().getRouter();
+
+			onHome: function() {
+				var oRouter = this.getOwnerComponent().getRouter();
 				oRouter.navTo("home");
 			},
-			onListItemPress:function(oEvent){
-				var oSelectedItem = oEvent.getSource(); // The selected list item (or table row)
 
-				// Retrieve the binding context for the selected item
+			onListItemPress: function(oEvent) {
+				var oSelectedItem = oEvent.getSource();
 				var oBindingContext = oSelectedItem.getBindingContext();
-				console.log(oBindingContext)
-
-				// Access the productId from the binding context, assuming the property is called 'productId'
 				const productId = oBindingContext.getProperty("ID");
 				let flexibleColumn = this.getView().getParent().getParent();
 				var oRouter = this.getOwnerComponent().getRouter();
+				
 				oRouter.navTo("productdescription", {
 					productId: productId,
-				},false);
+				}, false);
              
-			  flexibleColumn.setLayout(LayoutType.TwoColumnsMidExpanded)
+				flexibleColumn.setLayout(LayoutType.TwoColumnsMidExpanded);
 			},
 			
 			onProductSelect: function (oEvent) {
-				var oSelectedItem = oEvent.getSource(); // The selected list item (or table row)
-
-				// Retrieve the binding context for the selected item
+				var oSelectedItem = oEvent.getSource();
 				var oBindingContext = oSelectedItem.getBindingContext();
-
-				// Access the productId from the binding context, assuming the property is called 'productId'
 				const productId = oBindingContext.getProperty("ID");
 				var oRouter = this.getOwnerComponent().getRouter();
+				
 				oRouter.navTo("productdescription", {
 					productId: productId,
 				});
 			},
 
+			// Dialog Methods
 			onOpenDialog: function () {
 				this.byId("creatingpost").open();
 			},
+
 			onCloseDialog: function () {
 				this.byId("creatingpost").close();
 			},
-			formatDateForOData(date) {
+
+			formatDateForOData: function(date) {
 				if (!date) return null;
-				// If it's already a Date object, use it; otherwise create a new Date
 				const d = date instanceof Date ? date : new Date(date);
-				// Format: YYYY-MM-DD
 				return (
 					d.getFullYear() +
 					"-" +
@@ -91,14 +170,35 @@ sap.ui.define(
 					String(d.getDate()).padStart(2, "0")
 				);
 			},
+
 			onCreatePost: function () {
-				const ID = this.byId("productID").getValue();
-				const Name = this.byId("productName").getValue();
-				const Rating = this.byId("rating").getValue();
-				const Price = this.byId("price").getValue();
-				const ReleaseDate = this.formatDateForOData(
-					this.byId("newProductReleaseDate").getValue()
-				);
+				const productId = this.byId("productID");
+				const productName = this.byId("productName");
+				const rating = this.byId("rating");
+				const price = this.byId("price");
+				const releaseDate = this.byId("newProductReleaseDate");
+
+				// Perform all validations
+				const isProductIdValid = this.validateProductId({ getSource: () => productId });
+				const isProductNameValid = this.validateProductName({ getSource: () => productName });
+				const isRatingValid = this.validateRating({ getSource: () => rating });
+				const isPriceValid = this.validatePrice({ getSource: () => price });
+				const isReleaseDateValid = this.validateReleaseDate({ getSource: () => releaseDate });
+
+				// If any validation fails, stop execution
+				if (!isProductIdValid || !isProductNameValid || 
+					!isRatingValid || !isPriceValid || !isReleaseDateValid) {
+					MessageToast.show("Please correct the errors in the form.");
+					return;
+				}
+
+				const ID = productId.getValue();
+				const Name = productName.getValue();
+				const Rating = rating.getValue();
+				const Price = price.getValue();
+				const ReleaseDate = this.formatDateForOData(releaseDate.getValue());
+			
+	
 
 				const atomXml = `<?xml version="1.0" encoding="utf-8"?>
 <entry xml:base="https://services.odata.org/V3/(S(hzn4vwyj2pljjfroa0zssf5s))/OData/OData.svc/" xmlns="http://www.w3.org/2005/Atom" xmlns:d="http://schemas.microsoft.com/ado/2007/08/dataservices" xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xmlns:georss="http://www.georss.org/georss" xmlns:gml="http://www.opengis.net/gml">
