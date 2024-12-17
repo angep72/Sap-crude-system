@@ -1,103 +1,121 @@
 sap.ui.define([
-    // Import required SAP UI5 modules
-    "sap/ui/core/mvc/Controller",        // Base controller class
-    "sap/ui/core/UIComponent",           // UI Component for application-level operations
-    "sap/ui/model/json/JSONModel",       // JSON Model for local view data
-    "sap/m/MessageToast"                 // For showing brief, non-intrusive messages
+    "sap/ui/core/mvc/Controller",
+    "sap/ui/core/UIComponent",
+    "sap/ui/model/json/JSONModel",
+    "sap/m/MessageToast"
 ], function (Controller, UIComponent, JSONModel, MessageToast) {
     "use strict";
 
-    // Define valid tab keys as a module-level variable
-    // This ensures the keys are consistent and can be reused
+    // Define valid tab keys to prevent invalid navigation
     var _aValidTabKeys = ["Info", "Projects", "Hobbies", "Notes"];
 
-    // Extend the base Controller class with our specific implementationon 
     return Controller.extend("com.myorg.myapp.controller.employee.ResumeDetail", {
         /**
          * Initialization method called when the controller is instantiated
-         * Used for setting up initial view configurations and route handling
+         * Sets up models, routing, and initial configurations
          */
         onInit: function () {
-            // Get the router from the application component
-            var oRouter = this.getOwnerComponent().getRouter();
+            // Create and configure the employees JSON model
+            var oEmployeesModel = new JSONModel();
             
-            // Create a JSON model specifically for view-related data
-            // This allows storing temporary or UI-specific data separately from backend data
+            // Add detailed logging for model loading
+            oEmployeesModel.attachRequestCompleted(function(oEvent) {
+                if (oEvent.getParameter("success")) {
+                    console.log("Employees model loaded successfully");
+                    var aEmployees = oEvent.getSource().getData().Employees;
+                    console.log("Total employees loaded: ", aEmployees ? aEmployees.length : 0);
+                } else {
+                    console.error("Failed to load employees model");
+                }
+            });
+
+            // Load employee data
+            oEmployeesModel.loadData("model/employees.json");
+            
+            // Set the model to the view with a specific name
+            this.getView().setModel(oEmployeesModel, "employees");
+
+            // Create a separate model for view-specific data
             this.getView().setModel(new JSONModel(), "view");
-        
-            // Attach a route matched event handler
-            // This ensures that when the "employeeResume" route is matched, 
-            // our custom logic is executed
+
+            // Get the router and set up route matching
+            var oRouter = this.getOwnerComponent().getRouter();
             oRouter.getRoute("employeeResume").attachMatched(this._onRouteMatched, this);
         },
 
         /**
          * Route matched event handler
-         * Handles setting up the view when the route is matched
-         * @param {sap.ui.base.Event} oEvent - The routing event
+         * Manages view setup and tab selection when route is matched
          */
         _onRouteMatched: function (oEvent) {
-            // Declare variables for storing route arguments, view, and query parameters
-            var oArgs, oView, oQuery;
+            var oArgs = oEvent.getParameter("arguments");
+            var oView = this.getView();
+            var oQuery = oArgs["?query"];
+            var oModel = this.getView().getModel("employees");
+        
+            // Validate employeeId
+            if (!oArgs.employeeId || isNaN(parseInt(oArgs.employeeId))) {
+                console.error("Invalid employee ID");
+                this.getOwnerComponent().getRouter().getTargets().display("notFound");
+                return;
+            }
+        
+            // Store the employeeId to ensure it's constant across route changes
+            this._employeeId = oArgs.employeeId;
 
-            // Get the route arguments from the event
-            oArgs = oEvent.getParameter("arguments");
-
-            // Get the current view
-            oView = this.getView();
-
-            // Bind the view to a specific employee entity
-            // This creates a data context for the entire view
-            oView.bindElement({
-                // Construct the path to the specific employee using the employeeId from route
-                path: "/Employees(" + oArgs.employeeId + ")",
-                
-                // Define event handlers for the binding lifecycle
-                events: {
-                    // Handler for when the binding changes
-                    change: this._onBindingChange.bind(this),
-                    
-                    // Show busy indicator when data is being requested
-                    dataRequested: function (oEvent) {
-                        oView.setBusy(true);
-                    },
-                    
-                    // Hide busy indicator when data is received
-                    dataReceived: function (oEvent) {
-                        oView.setBusy(false);
-                    }
+            oModel.dataLoaded().then(function() {
+                try {
+                    this._bindEmployeeData(oArgs, oView);
+                } catch (error) {
+                    console.error("Error binding employee data:", error);
+                    this.getOwnerComponent().getRouter().getTargets().display("notFound");
                 }
+            }.bind(this)).catch(function(error) {
+                console.error("Model loading failed:", error);
+                MessageToast.show("Unable to load employee data");
             });
-
-            // Get query parameters from route arguments
-            oQuery = oArgs["?query"];
-
-            // Validate and set the selected tab
+        
+            // Handle tab selection
             if (oQuery && _aValidTabKeys.indexOf(oQuery.tab) > -1) {
-                // If the query tab is valid, set it in the view model
                 oView.getModel("view").setProperty("/selectedTabKey", oQuery.tab);
             } else {
-                // If no valid tab is provided, navigate to the first valid tab
+                // Default to first tab if no valid tab is provided
                 this.getOwnerComponent().getRouter().navTo("employeeResume", {
-                    // Maintain the current employee ID
                     employeeId: oArgs.employeeId,
-                    
-                    // Set the first tab from _aValidTabKeys as the default
-                    "?query": {
-                        tab: _aValidTabKeys[0]
-                    }
-                }, true /* suppress browser history entry */);
+                    "?query": { tab: _aValidTabKeys[0] }
+                }, true);
             }
         },
 
         /**
-         * Binding change event handler
-         * Checks if the binding context is valid, redirects to "not found" if no context exists
-         * @param {sap.ui.base.Event} oEvent - The binding change event
+         * Binds employee data to the view
+         * @param {Object} oArgs - Route arguments
+         * @param {sap.ui.core.mvc.View} oView - Current view
          */
-        _onBindingChange: function (oEvent) {
-            // Check if no binding context exists (i.e., employee not found)
-            if (!this.getView().getBindingContext()) {
+        _bindEmployeeData: function (oArgs, oView) {
+            // Enhanced binding with explicit model and error handling
+            oView.bindElement({
+                path: "/Employees/" + this._employeeId,  // Use the stored employeeId
+                model: "employees",
+                events: {
+                    change: this._onBindingChange.bind(this),
+                    dataRequested: function () {
+                        oView.setBusy(true);
+                    },
+                    dataReceived: function () {
+                        oView.setBusy(false);
+                    }
+                }
+            });
+        },
+
+        /**
+         * Binding change event handler
+         * Redirects to "not found" page if no binding context exists
+         */
+        _onBindingChange: function () {
+            // Check if no binding context exists
+            if (!this.getView().getBindingContext("employees")) {
                 // Navigate to the "not found" target
                 this.getOwnerComponent().getRouter().getTargets().display("notFound");
             }
@@ -105,56 +123,24 @@ sap.ui.define([
 
         /**
          * Tab selection event handler
-         * Updates the route when a different tab is selected
+         * Updates route when a different tab is selected
          * @param {sap.ui.base.Event} oEvent - The tab select event
          */
         onTabSelect: function (oEvent) {
-            // Safely extract the selected key
-            var sSelectedKey = oEvent.getParameter("selectedKey");
-        
-            // Get the current route arguments
             var oRouter = this.getOwnerComponent().getRouter();
-            var oCurrentHash = oRouter.oHashChanger.getHash();
             
-            // Parse the current hash to extract existing parameters
-            var oCurrentRouteParams = this._parseRouteHash(oCurrentHash);
-        
-            // Navigate to the same route with updated tab parameter
-            oRouter.navTo("employeeResume", {
-                // Maintain the current employee ID from existing route
-                employeeId: oCurrentRouteParams.employeeId,
-                
-                // Update the tab query parameter with the newly selected tab
-                "?query": {
-                    tab: sSelectedKey
-                }
-            }, true /* suppress browser history entry */);
-        },
-        
-        // Helper method to parse the current route hash
-        _parseRouteHash: function(sHash) {
-            // Split the hash into route and query parts
-            var aParts = sHash.split('?');
-            var sRoutePart = aParts[0];
-            
-            // Extract employeeId (assuming it's the last part of the route)
-            var aRouteParts = sRoutePart.split('/');
-            var sEmployeeId = aRouteParts[aRouteParts.length - 1];
-        
-            // Parse query parameters if they exist
-            var oQuery = {};
-            if (aParts[1]) {
-                aParts[1].split('&').forEach(function(sParam) {
-                    var aPair = sParam.split('=');
-                    oQuery[aPair[0]] = decodeURIComponent(aPair[1]);
-                });
+            // Use the stored employeeId for navigation
+            if (this._employeeId) {
+                oRouter.navTo("employeeResume", {
+                    employeeId: this._employeeId,  // Use stored employeeId
+                    "?query": { 
+                        tab: oEvent.getParameter("selectedKey") 
+                    }
+                }, true); // No browser history
+            } else {
+                console.error("EmployeeID is not available.");
+                MessageToast.show("Unable to select tab: Employee data not found.");
             }
-        
-            return {
-                employeeId: sEmployeeId,
-                query: oQuery
-            };
         }
-        
     });
 });
