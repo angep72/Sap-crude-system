@@ -69,6 +69,11 @@
         "async": true
       },
       "routes": [
+        {
+          "pattern": "validate",
+          "name": "validate",
+          "target": "validate"
+        },
        
         {
          "pattern": "employeeDetail/{EmployeeID}",
@@ -158,7 +163,12 @@
 					"id": "notFound",
 					"viewName": "NotFound",
 					"transition": "show"
-				}
+				},
+        "validate":{
+          "id":"validate",
+          "viewName":"Validate",
+          "transition":"flip"
+        }
       }
     }
   }
