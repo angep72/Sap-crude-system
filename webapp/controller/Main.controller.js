@@ -2,17 +2,19 @@ sap.ui.define(
 	[
 		"./BaseController",
 		"sap/m/MessageBox",
-		"sap/m/MessageToast",
 		"sap/ui/model/odata/v2/ODataModel",
 		"sap/ui/model/Sorter",
 		"sap/f/LayoutType", 
-		"sap/f/library"
+		 "sap/f/library",
+		 "sap/ui/model/Filter",
+		 "sap/m/MessageToast",          // Import MessageToast from sap.m
+
 	],
-	function (BaseController, MessageBox, MessageToast, ODataModel, Sorter, LayoutType, fLibrary) {
+	function (BaseController, MessageBox, ODataModel,Sorter,LayoutType,fLibrary,Filter,MessageToast) {
 		"use strict";
 
 		return BaseController.extend("com.myorg.myapp.controller.Main", {
-			onInit() {
+			onInit: function () {
 				let oModel = new ODataModel("http://localhost:3000/odata", {
 					defaultBindingMode: "TwoWay",
 					useBatch: false,
@@ -22,146 +24,166 @@ sap.ui.define(
 					json: false,
 					maxDataServiceVersion: "3.0",
 				});
-				this.getView().setModel(oModel);
+			
+				var oView = this.getView().setModel(oModel);
 				oModel.read("/Products", {
 					success(data) {
-						console.log(data);
+						console.log("Products data: ", data);
 					},
+					error(error) {
+						console.log("Error fetching products: ", error);
+					}
 				});
+			
+				this.oSF = oView.byId("searchField");
 			},
-
-			// Validation Methods
+			
+			onSuggest: function (event) {
+				// Get the value entered in the SearchField
+				var sValue = event.getParameter("suggestValue"),
+					aFilters = [];
+			
+				// Get the SearchField control dynamically if not initialized
+				this.oSF = this.oSF || this.byId("searchField");
+			
+				// Check if there is any value entered
+				if (sValue) {
+					// Create filters for both 'ID' and 'Name' fields
+					aFilters = [
+						new sap.ui.model.Filter("ID", sap.ui.model.FilterOperator.Contains, sValue),
+						new sap.ui.model.Filter("Name", sap.ui.model.FilterOperator.Contains, sValue)
+					];
+				} else {
+					// If no value entered, clear the filter to show all items
+					aFilters = [];
+				}
+			
+				// Apply the filter to the suggestionItems aggregation
+				var oBinding = this.oSF.getBinding("suggestionItems");
+				if (oBinding) {
+					oBinding.filter(aFilters);
+				}
+			
+				// Suggest the items only if there is a valid search value or filter
+				if (sValue) {
+					this.oSF.suggest();
+				}
+			},
+			
+			onSearch: function (event) {
+				var oItem = event.getParameter("suggestionItem");
+				console.log(oItem);
+				if (oItem) {
+					MessageToast.show("Search for: " + oItem.getText());
+				} else {
+					MessageToast.show("Search is fired!");
+				}
+			}
+,			
+			
+			
 			validateProductId: function(oEvent) {
 				const input = oEvent.getSource();
 				const value = input.getValue();
 				
 				if (!/^\d+$/.test(value)) {
 					input.setValueState("Error");
-					input.setValueStateText("Product ID must be a number");
 					return false;
 				}
 				
 				input.setValueState("None");
 				return true;
 			},
-
 			validateProductName: function(oEvent) {
 				const input = oEvent.getSource();
 				const value = input.getValue();
 				
 				if (value.length < 10 || value.length > 45) {
 					input.setValueState("Error");
-					input.setValueStateText("Product Name must be 10-45 characters");
 					return false;
 				}
 				
 				input.setValueState("None");
 				return true;
 			},
-
 			validateRating: function(oEvent) {
 				const input = oEvent.getSource();
 				const value = parseFloat(input.getValue());
 				
 				if (isNaN(value) || value < 1 || value > 10) {
 					input.setValueState("Error");
-					input.setValueStateText("Rating must be between 1 and 10");
 					return false;
 				}
 				
 				input.setValueState("None");
 				return true;
 			},
-
 			validatePrice: function(oEvent) {
-				const input = oEvent.getSource();
-				const value = parseFloat(input.getValue());
-				
-				if (isNaN(value) || value < 100 || value > 1000) {
-					input.setValueState("Error");
-					input.setValueStateText("Price must be between 100 and 1000");
-					return false;
-				}
-				
-				input.setValueState("None");
-				return true;
-			},
+            const input = oEvent.getSource();
+            const value = parseFloat(input.getValue());
+            
+            if (isNaN(value) || value < 100 || value > 1000) {
+                input.setValueState("Error");
+                return false;
+            }
+            
+            input.setValueState("None");
+            return true;
+        },
+            
 
-			validateReleaseDate: function(oEvent) { 
-				const datePicker = oEvent.getSource(); 
-				const selectedDate = datePicker.getDateValue(); 
-				
-				// Add null/undefined check
-				if (!selectedDate) {
-					datePicker.setValueState("Error");
-					datePicker.setValueStateText("Please select a release date");
-					return false;
-				}
-				
-				const today = new Date(); 
-				
-				// Reset time for accurate comparison 
-				today.setHours(0, 0, 0, 0); 
-				selectedDate.setHours(0, 0, 0, 0); 
-				
-				if (selectedDate < today) { 
-					datePicker.setValueState("Error"); 
-					datePicker.setValueStateText("Release date must be today or in the future"); 
-					return false; 
-				} 
-				
-				datePicker.setValueState("None"); 
-				return true; 
-			},
+			onFlexibleColumn:function(){
 
-			// Existing Navigation Methods
-			onFlexibleColumn: function() {
 				var oRouter = this.getOwnerComponent().getRouter();
 				oRouter.navTo("flexible");
 			},
-
-			onHome: function() {
-				var oRouter = this.getOwnerComponent().getRouter();
+			onHome:function(){
+                var oRouter = this.getOwnerComponent().getRouter();
 				oRouter.navTo("home");
 			},
+			onListItemPress:function(oEvent){
+				var oSelectedItem = oEvent.getSource(); // The selected list item (or table row)
 
-			onListItemPress: function(oEvent) {
-				var oSelectedItem = oEvent.getSource();
+				// Retrieve the binding context for the selected item
 				var oBindingContext = oSelectedItem.getBindingContext();
+				console.log(oBindingContext)
+
+				// Access the productId from the binding context, assuming the property is called 'productId'
 				const productId = oBindingContext.getProperty("ID");
 				let flexibleColumn = this.getView().getParent().getParent();
 				var oRouter = this.getOwnerComponent().getRouter();
-				
 				oRouter.navTo("productdescription", {
 					productId: productId,
-				}, false);
+				},false);
              
-				flexibleColumn.setLayout(LayoutType.TwoColumnsMidExpanded);
+			  flexibleColumn.setLayout(LayoutType.TwoColumnsMidExpanded)
 			},
 			
 			onProductSelect: function (oEvent) {
-				var oSelectedItem = oEvent.getSource();
+				var oSelectedItem = oEvent.getSource(); // The selected list item (or table row)
+
+				// Retrieve the binding context for the selected item
 				var oBindingContext = oSelectedItem.getBindingContext();
+
+				// Access the productId from the binding context, assuming the property is called 'productId'
 				const productId = oBindingContext.getProperty("ID");
 				var oRouter = this.getOwnerComponent().getRouter();
-				
 				oRouter.navTo("productdescription", {
 					productId: productId,
 				});
 			},
 
-			// Dialog Methods
 			onOpenDialog: function () {
 				this.byId("creatingpost").open();
 			},
-
 			onCloseDialog: function () {
 				this.byId("creatingpost").close();
 			},
-
-			formatDateForOData: function(date) {
+			formatDateForOData(date) {
 				if (!date) return null;
+				// If it's already a Date object, use it; otherwise create a new Date
 				const d = date instanceof Date ? date : new Date(date);
+				// Format: YYYY-MM-DD
 				return (
 					d.getFullYear() +
 					"-" +
@@ -170,35 +192,16 @@ sap.ui.define(
 					String(d.getDate()).padStart(2, "0")
 				);
 			},
-
 			onCreatePost: function () {
-				const productId = this.byId("productID");
-				const productName = this.byId("productName");
-				const rating = this.byId("rating");
-				const price = this.byId("price");
-				const releaseDate = this.byId("newProductReleaseDate");
-
-				// Perform all validations
-				const isProductIdValid = this.validateProductId({ getSource: () => productId });
-				const isProductNameValid = this.validateProductName({ getSource: () => productName });
-				const isRatingValid = this.validateRating({ getSource: () => rating });
-				const isPriceValid = this.validatePrice({ getSource: () => price });
-				const isReleaseDateValid = this.validateReleaseDate({ getSource: () => releaseDate });
-
-				// If any validation fails, stop execution
-				if (!isProductIdValid || !isProductNameValid || 
-					!isRatingValid || !isPriceValid || !isReleaseDateValid) {
-					MessageToast.show("Please correct the errors in the form.");
-					return;
-				}
-
-				const ID = productId.getValue();
-				const Name = productName.getValue();
-				const Rating = rating.getValue();
-				const Price = price.getValue();
-				const ReleaseDate = this.formatDateForOData(releaseDate.getValue());
-			
-	
+				const ID = this.byId("productID").getValue();
+				const Name = this.byId("productName").getValue();
+				const Rating = this.byId("rating").getValue();
+				const Price = this.byId("price").getValue();
+				const ReleaseDate = this.formatDateForOData(
+					this.byId("newProductReleaseDate").getValue()
+				);
+				var bValid = true;
+				
 
 				const atomXml = `<?xml version="1.0" encoding="utf-8"?>
 <entry xml:base="https://services.odata.org/V3/(S(hzn4vwyj2pljjfroa0zssf5s))/OData/OData.svc/" xmlns="http://www.w3.org/2005/Atom" xmlns:d="http://schemas.microsoft.com/ado/2007/08/dataservices" xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xmlns:georss="http://www.georss.org/georss" xmlns:gml="http://www.opengis.net/gml">
@@ -372,23 +375,23 @@ sap.ui.define(
 					},
 				});
 			},
-			onSearch: function (oEvent) {
-				const sQuery = oEvent.getParameter("query");
-				const oList = this.byId("suppliersTable"); // Get the List control
-				// Create a filter for the search query
-				const oFilter = new sap.ui.model.Filter({
-					path: "Name", // The field to search
-					operator: sap.ui.model.FilterOperator.Contains, // Use contains for partial matching
-					value1: sQuery, // The search string entered by the user
-				});
-				const oBinding = oList.getBinding("items");
-				oBinding.filter(oFilter);
+			// onSearch: function (oEvent) {
+			// 	const sQuery = oEvent.getParameter("query");
+			// 	const oList = this.byId("suppliersTable"); // Get the List control
+			// 	// Create a filter for the search query
+			// 	const oFilter = new sap.ui.model.Filter({
+			// 		path: "Name", // The field to search
+			// 		operator: sap.ui.model.FilterOperator.Contains, // Use contains for partial matching
+			// 		value1: sQuery, // The search string entered by the user
+			// 	});
+			// 	const oBinding = oList.getBinding("items");
+			// 	oBinding.filter(oFilter);
 
-				// If no query is entered, clear the filter to show all items
-				if (!sQuery) {
-					oBinding.filter([]);
-				}
-			},
+			// 	// If no query is entered, clear the filter to show all items
+			// 	if (!sQuery) {
+			// 		oBinding.filter([]);
+			// 	}
+			// },
 			onSortChange: function () {
 				var oTable = this.byId("suppliersTable");
 				var oBinding = oTable.getBinding("items");
