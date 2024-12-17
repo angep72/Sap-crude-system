@@ -19,12 +19,18 @@
                     <Toolbar>
                         <Title text="Suppliers Text" />
                         <ToolbarSpacer />
-                        <Button text="Routing course" press="onHome"/>
-                        <Button text="flexible Colum" press="onFlexibleColumn"/>
+                        <Button
+                            text="Routing course"
+                            press="onHome"
+                        />
+                        <Button
+                            text="flexible Colum"
+                            press="onFlexibleColumn"
+                        />
                         <SearchField
                             placeholder="please search the feild"
                             width="30%"
-                            search ="onSearch"
+                            search="onSearch"
                         />
                         <Button
                             text="sort"
@@ -95,30 +101,62 @@
             title="Creating new post dialog"
         >
             <VBox class="sapUiSmallMargin">
+                <!-- Product ID: Numbers only -->
                 <Label text="Product Id" />
-                <Input id="productID" />
+                <Input
+                    id="productID"
+                    type="Number"
+                    valueStateText="Product ID must be a number"
+                    change="validateProductId"
+                />
+
+                <!-- Product Name: 10-45 characters -->
                 <Label text="Product Name" />
-                <Input id="productName" />
+                <Input
+                    id="productName"
+                    maxLength="45"
+                    valueStateText="Product Name must be 10-45 characters"
+                    change="validateProductName"
+                />
+
+                <!-- Rating: 1-10 -->
                 <Label text="Rating" />
-                <Input id="rating" />
+                <Input
+                    id="rating"
+                    type="Number"
+                    valueStateText="Rating must be between 1 and 10"
+                    change="validateRating"
+                />
+
+                <!-- Price: 100-1000 -->
                 <Label text="Price" />
-                <Input id="price" />
+                <Input
+                    id="price"
+                    type="Number"
+                    valueStateText="Price must be between 100 and 1000"
+                    change="validatePrice"
+                />
+
+                <!-- Release Date: Current and future dates -->
                 <Label text="Release date" />
                 <DatePicker
                     id="newProductReleaseDate"
                     valueFormat="yyyy-MM-dd"
                     displayFormat="yyyy-MM-dd"
+                    change="validateReleaseDate"
                 />
             </VBox>
+
             <beginButton>
                 <Button
                     text="Save"
                     press="onCreatePost"
                 />
             </beginButton>
+
             <endButton>
                 <Button
-                    text="cancel"
+                    text="Cancel"
                     press="onCloseDialog"
                 />
             </endButton>
