@@ -3,7 +3,7 @@
     controllerName="com.myorg.myapp.controller.Validate"
     xmlns="sap.m"
 >
-    <Page title="Validation Dialog Demo" navButtonPress="onBack" showNavButton="true">
+    <Page id="validationpage" title="Validation Dialog Demo" navButtonPress="onBack" showNavButton="true">
         <content>
             <Button
                 id="openDialog"
@@ -56,11 +56,13 @@
             </content>
             <buttons>
                 <Button
+                id="submitBtn"
                     text="Submit"
                     press="onSubmit"
                     type="Emphasized"
                 />
                 <Button
+                id="cancelBtn"
                     text="Cancel"
                     press="onCloseDialog"
                     type="Transparent"
