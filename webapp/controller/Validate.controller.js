@@ -88,6 +88,10 @@ sap.ui.define([
                 this.onCloseDialog();
             }
         },
+        onBack:function(){
+            const oRouter = this.getOwnerComponent().getRouter();
+            oRouter.navTo("home");
+        },
 
         onCloseDialog: function() {
             // Use this method to close the dialog
