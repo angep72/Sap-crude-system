@@ -6,6 +6,7 @@
     <Page title="Validation Dialog Demo" navButtonPress="onBack" showNavButton="true">
         <content>
             <Button
+                id="openDialog"
                 text="Open Validation Dialog"
                 press="onOpenDialog"
                 type="Emphasized"
