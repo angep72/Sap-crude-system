@@ -200,7 +200,7 @@ sap.ui.define(
 				const ReleaseDate = this.formatDateForOData(
 					this.byId("newProductReleaseDate").getValue()
 				);
-				var bValid = true;
+				
 				
 
 				const atomXml = `<?xml version="1.0" encoding="utf-8"?>
