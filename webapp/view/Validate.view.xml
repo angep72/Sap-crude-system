@@ -3,7 +3,7 @@
     controllerName="com.myorg.myapp.controller.Validate"
     xmlns="sap.m"
 >
-    <Page title="Validation Dialog Demo">
+    <Page title="Validation Dialog Demo" navButtonPress="onBack" showNavButton="true">
         <content>
             <Button
                 text="Open Validation Dialog"
