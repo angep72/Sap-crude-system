@@ -70,6 +70,11 @@
       },
       "routes": [
         {
+          "pattern": "",
+          "name": "Launchpad",
+          "target": "Launchpad"
+        },
+        {
           "pattern": "validate",
           "name": "validate",
           "target": "validate"
@@ -96,7 +101,7 @@
           "target": "home"
         },
         {
-          "pattern": "",
+          "pattern": "main",
           "name": "main",
           "target": "main"
         },
@@ -168,6 +173,11 @@
           "id":"validate",
           "viewName":"Validate",
           "transition":"flip"
+        },
+        "Launchpad": {
+          "viewName": "Launchpad",
+          "viewId": "launchpad",
+          "viewType": "XML"
         }
       }
     }

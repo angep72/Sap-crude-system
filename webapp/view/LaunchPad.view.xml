@@ -1,0 +1,41 @@
+<mvc:View xmlns:layout="sap.ui.layout"
+  xmlns:mvc="sap.ui.core.mvc"
+  xmlns="sap.m"
+  controllerName="com.myorg.myapp.controller.Launchpad">
+  
+  <!-- Using sap.m.Grid as a container for tiles -->
+  <layout:Grid >
+    <!-- Example of a simple tile -->
+    <GenericTile
+      header="Tile 1"
+      subheader="Tile description"
+      press="onTilePress">
+      <tileContent>
+        <TileContent>
+          <!-- Example of content within the tile -->
+          <content>
+            <Text text="Some content for Tile 1" />
+          </content>
+        </TileContent>
+      </tileContent>
+    </GenericTile>
+
+    <!-- Another example of a tile -->
+    <GenericTile
+      header="Tile 2"
+      subheader="Tile description"
+      press="onTilePress">
+      <tileContent>
+        <TileContent>
+          <!-- Example of content within the tile -->
+          <content>
+            <Text text="Some content for Tile 2" />
+          </content>
+        </TileContent>
+      </tileContent>
+    </GenericTile>
+    
+    <!-- Add more tiles here -->
+  </layout:Grid>
+
+</mvc:View>

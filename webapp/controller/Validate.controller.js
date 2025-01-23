@@ -92,7 +92,6 @@ sap.ui.define([
             const oRouter = this.getOwnerComponent().getRouter();
             oRouter.navTo("home");
         },
-
         onCloseDialog: function() {
             // Use this method to close the dialog
             var oDialog = this.byId("validationDialog");
@@ -104,3 +103,4 @@ sap.ui.define([
         }
     });
 });
+

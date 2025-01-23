@@ -28,7 +28,7 @@
 		<snappedHeading>
 			<m:FlexBox wrap="Wrap" fitContainer="true" alignItems="Center">
 				<m:FlexBox wrap="NoWrap" fitContainer="true" alignItems="Center" class="sapUiTinyMarginEnd">
-					<m:Title text="Musime Richard" wrapping="true" class="sapUiTinyMarginEnd"/>
+					<m:Title text="Ange Pauline" wrapping="true" class="sapUiTinyMarginEnd"/>
 				</m:FlexBox>
 				<m:FlexBox wrap="NoWrap" fitContainer="true" alignItems="Center" class="sapUiTinyMarginEnd">
 					<m:ObjectMarker type="Favorite" class="sapUiTinyMarginEnd"/>
